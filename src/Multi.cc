@@ -77,6 +77,16 @@ namespace NodeLibcurl {
         uv_timer_stop( this->timeout.get() );
     }
 
+    void Multi::RemoveCBOnMessage()
+    {
+        assert( this->isOpen );
+
+        if ( this->cbOnMessage ) {
+            delete this->cbOnMessage;
+            this->cbOnMessage = nullptr;
+        }
+    }
+
     //The curl_multi_socket_action(3) function informs the application about updates
     //  in the socket (file descriptor) status by doing none, one, or multiple calls to this function
     int Multi::HandleSocket( CURL *easy, curl_socket_t s, int action, void *userp, void *socketp )
@@ -303,6 +313,7 @@ namespace NodeLibcurl {
         Nan::SetPrototypeMethod( tmpl, "removeHandle", Multi::RemoveHandle );
         Nan::SetPrototypeMethod( tmpl, "getCount",     Multi::GetCount );
         Nan::SetPrototypeMethod( tmpl, "close",        Multi::Close );
+        Nan::SetPrototypeMethod( tmpl, "removeOnMessage",        Multi::RemoveOnMessage );
 
         // static methods
         Nan::SetMethod( tmpl, "strError", Multi::StrError );
@@ -523,6 +534,15 @@ namespace NodeLibcurl {
         }
 
         obj->Dispose();
+    }
+
+    NAN_METHOD( Multi::RemoveOnMessage )
+    {
+        Nan::HandleScope scope;
+
+        Multi *obj = Nan::ObjectWrap::Unwrap<Multi>( info.This() );
+
+        obj->RemoveCBOnMessage();
     }
 
     NAN_METHOD( Multi::StrError )

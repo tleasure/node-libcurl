@@ -50,6 +50,7 @@ namespace NodeLibcurl {
         Multi& operator=( const Multi &that );
 
         void Dispose();
+        void RemoveCBOnMessage();
         void ProcessMessages();
         void CallOnMessageCallback( CURL *easy, CURLcode statusCode );
 
@@ -91,6 +92,7 @@ namespace NodeLibcurl {
         static NAN_METHOD( RemoveHandle );
         static NAN_METHOD( GetCount );
         static NAN_METHOD( Close );
+        static NAN_METHOD( RemoveOnMessage );
         static NAN_METHOD( StrError );
 
         // libcurl multi_setopt callbacks
